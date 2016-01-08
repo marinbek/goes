@@ -1210,52 +1210,6 @@ func (s *GoesTestSuite) TestGetMapping(c *C) {
 	c.Assert(len(response.Raw), Not(Equals), 0)
 }
 
-func (s *GoesTestSuite) TestDeleteMapping(c *C) {
-	indexName := "testdeletemapping"
-	docType := "tweet"
-
-	conn := NewConnection(ES_HOST, ES_PORT)
-	// just in case
-	conn.DeleteIndex(indexName)
-
-	_, err := conn.CreateIndex(indexName, map[string]interface{}{})
-	c.Assert(err, IsNil)
-	defer conn.DeleteIndex(indexName)
-
-	d := Document{
-		Index: indexName,
-		Type:  docType,
-		Fields: map[string]interface{}{
-			"user":    "foo",
-			"message": "bar",
-		},
-	}
-
-	response, err := conn.Index(d, url.Values{})
-	c.Assert(err, IsNil)
-
-	mapping := map[string]interface{}{
-		"tweet": map[string]interface{}{
-			"properties": map[string]interface{}{
-				"count": map[string]interface{}{
-					"type":  "integer",
-					"index": "not_analyzed",
-					"store": true,
-				},
-			},
-		},
-	}
-	response, err = conn.PutMapping("tweet", mapping, []string{indexName})
-	c.Assert(err, IsNil)
-	time.Sleep(200 * time.Millisecond)
-
-	response, err = conn.DeleteMapping("tweet", []string{indexName})
-	c.Assert(err, IsNil)
-
-	c.Assert(response.Acknowledged, Equals, true)
-	c.Assert(response.TimedOut, Equals, false)
-}
-
 func (s *GoesTestSuite) TestAddAlias(c *C) {
 	aliasName := "testAlias"
 	indexName := "testalias_1"

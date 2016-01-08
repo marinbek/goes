@@ -550,19 +550,6 @@ func (c *Connection) Update(d Document, query interface{}, extraArgs url.Values)
 	return r.Run()
 }
 
-// DeleteMapping deletes a mapping along with all data in the type
-func (c *Connection) DeleteMapping(typeName string, indexes []string) (*Response, error) {
-
-	r := Request{
-		Conn:      c,
-		IndexList: indexes,
-		method:    "DELETE",
-		api:       "_mappings/" + typeName,
-	}
-
-	return r.Run()
-}
-
 func (c *Connection) modifyAlias(action string, alias string, indexes []string) (*Response, error) {
 	command := map[string]interface{}{
 		"actions": make([]map[string]interface{}, 1),
