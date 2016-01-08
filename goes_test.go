@@ -1299,7 +1299,7 @@ func (s *GoesTestSuite) TestIndexWithChild(c *C) {
 		"mappings": mapping,
 	})
 	c.Assert(err, IsNil)
-	// defer conn.DeleteIndex(indexName)
+	defer conn.DeleteIndex(indexName)
 
 	c.Assert(response.Acknowledged, Equals, true)
 	c.Assert(response.TimedOut, Equals, false)
