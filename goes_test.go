@@ -1274,22 +1274,14 @@ func (s *GoesTestSuite) TestIndexWithChild(c *C) {
 	// just in case
 	conn.DeleteIndex(indexName)
 
-	_, err := conn.CreateIndex(indexName, map[string]interface{}{})
-	c.Assert(err, IsNil)
-	//defer conn.DeleteIndex(indexName)
-
-	authorDoc := Document{
-		Index: indexName,
-		Type:  "author",
-		Fields: map[string]interface{}{
-			"name": "An Author",
-		},
-		Id: "aut",
-	}
-	response, err := conn.Index(authorDoc, url.Values{})
-	c.Assert(err, IsNil)
-
 	mapping := map[string]interface{}{
+		"author": map[string]interface{}{
+			"properties": map[string]interface{}{
+				"name": map[string]interface{}{
+					"type": "string",
+				},
+			},
+		},
 		"tweet": map[string]interface{}{
 			"properties": map[string]interface{}{
 				"count": map[string]interface{}{
@@ -1303,13 +1295,27 @@ func (s *GoesTestSuite) TestIndexWithChild(c *C) {
 			},
 		},
 	}
-	response, err = conn.PutMapping("tweet", mapping, []string{indexName})
+	response, err := conn.CreateIndex(indexName, map[string]interface{}{
+		"mappings": mapping,
+	})
 	c.Assert(err, IsNil)
+	// defer conn.DeleteIndex(indexName)
 
 	c.Assert(response.Acknowledged, Equals, true)
 	c.Assert(response.TimedOut, Equals, false)
 
 	d := Document{
+		Index: indexName,
+		Type:  "author",
+		Id:    "aut",
+		Fields: map[string]interface{}{
+			"name": "An Author",
+		},
+	}
+
+	response, err = conn.Index(d, url.Values{})
+	c.Assert(err, IsNil)
+	d = Document{
 		Index: indexName,
 		Type:  docType,
 		Fields: map[string]interface{}{
