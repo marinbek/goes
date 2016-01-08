@@ -400,7 +400,7 @@ func (s *GoesTestSuite) TestIndexWithFieldsInStruct(c *C) {
 	}
 
 	extraArgs := make(url.Values, 1)
-	extraArgs.Set("ttl", "86400000")
+	extraArgs.Set("ttl", "86400000ms")
 	response, err := conn.Index(d, extraArgs)
 	c.Assert(err, IsNil)
 
@@ -438,7 +438,7 @@ func (s *GoesTestSuite) TestIndexWithFieldsNotInMapOrStruct(c *C) {
 	}
 
 	extraArgs := make(url.Values, 1)
-	extraArgs.Set("ttl", "86400000")
+	extraArgs.Set("ttl", "86400000ms")
 	_, err = conn.Index(d, extraArgs)
 	c.Assert(err, Not(IsNil))
 }
@@ -472,7 +472,7 @@ func (s *GoesTestSuite) TestIndexIdDefined(c *C) {
 	}
 
 	extraArgs := make(url.Values, 1)
-	extraArgs.Set("ttl", "86400000")
+	extraArgs.Set("ttl", "86400000ms")
 	response, err := conn.Index(d, extraArgs)
 	c.Assert(err, IsNil)
 
