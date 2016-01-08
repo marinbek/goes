@@ -165,12 +165,19 @@ type Hits struct {
 
 type SearchError struct {
 	Msg        string
+	Type       string
+	Cause      string
 	StatusCode uint64
 }
 
+type ElasticErrorCause struct {
+	Type   string
+	Reason string
+}
 type ElasticError struct {
 	Type   string
 	Reason string
+	Cause  ElasticErrorCause `json:"caused_by"`
 }
 
 // Represent the status for a given index for the _status command

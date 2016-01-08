@@ -24,7 +24,7 @@ const (
 )
 
 func (err *SearchError) Error() string {
-	return fmt.Sprintf("[%d] %s", err.StatusCode, err.Msg)
+	return fmt.Sprintf("[%d] %s", err.StatusCode, err.Type)
 }
 
 // NewConnection initiates a new Connection to an elasticsearch server
@@ -371,7 +371,7 @@ func (req *Request) Run() (*Response, error) {
 		for _, item := range esResp.Items {
 			for _, i := range item {
 				if i.Error != "" {
-					return esResp, &SearchError{i.Error, i.Status}
+					return esResp, &SearchError{Msg: i.Error, StatusCode: i.Status}
 				}
 			}
 		}
@@ -379,7 +379,12 @@ func (req *Request) Run() (*Response, error) {
 	}
 
 	if esResp.Error.Type != "" {
-		return esResp, &SearchError{esResp.Error.Type, esResp.Status}
+		return esResp, &SearchError{
+			Msg:        esResp.Error.Reason,
+			Type:       esResp.Error.Type,
+			Cause:      esResp.Error.Cause.Reason,
+			StatusCode: esResp.Status,
+		}
 	}
 
 	return esResp, nil
