@@ -309,6 +309,10 @@ func (c *Connection) Get(index string, documentType string, id string, extraArgs
 // The extraArgs is a list of url.Values that you can send to elasticsearch as
 // URL arguments, for example, to control routing, ttl, version, op_type, etc.
 func (c *Connection) Index(d Document, extraArgs url.Values) (*Response, error) {
+	if parent, ok := d.Parent.(string); ok {
+		extraArgs.Set("parent", parent)
+	}
+
 	r := Request{
 		Conn:      c,
 		Query:     d.Fields,

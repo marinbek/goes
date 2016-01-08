@@ -1424,3 +1424,59 @@ func (s *GoesTestSuite) TestAliasExists(c *C) {
 	exists, err = conn.AliasExists(alias)
 	c.Assert(exists, Equals, true)
 }
+
+func (s *GoesTestSuite) TestIndexWithChild(c *C) {
+	indexName := "testindexwithchild"
+	docType := "tweet"
+
+	conn := NewConnection(ES_HOST, ES_PORT)
+	// just in case
+	conn.DeleteIndex(indexName)
+
+	_, err := conn.CreateIndex(indexName, map[string]interface{}{})
+	c.Assert(err, IsNil)
+	//defer conn.DeleteIndex(indexName)
+
+	authorDoc := Document{
+		Index: indexName,
+		Type:  "author",
+		Fields: map[string]interface{}{
+			"name": "An Author",
+		},
+		Id: "aut",
+	}
+	response, err := conn.Index(authorDoc, url.Values{})
+	c.Assert(err, IsNil)
+
+	mapping := map[string]interface{}{
+		"tweet": map[string]interface{}{
+			"properties": map[string]interface{}{
+				"count": map[string]interface{}{
+					"type":  "integer",
+					"index": "not_analyzed",
+					"store": true,
+				},
+			},
+			"_parent": map[string]interface{}{
+				"type": "author",
+			},
+		},
+	}
+	response, err = conn.PutMapping("tweet", mapping, []string{indexName})
+	c.Assert(err, IsNil)
+
+	c.Assert(response.Acknowledged, Equals, true)
+	c.Assert(response.TimedOut, Equals, false)
+
+	d := Document{
+		Index: indexName,
+		Type:  docType,
+		Fields: map[string]interface{}{
+			"count": 5,
+		},
+		Parent: "aut",
+	}
+
+	response, err = conn.Index(d, url.Values{})
+	c.Assert(err, IsNil)
+}
