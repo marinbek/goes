@@ -24,7 +24,7 @@ const (
 )
 
 func (err *SearchError) Error() string {
-	return fmt.Sprintf("[%d] %s", err.StatusCode, err.Type)
+	return fmt.Sprintf("[%d] %s: %s", err.StatusCode, err.Type, err.Cause)
 }
 
 // NewConnection initiates a new Connection to an elasticsearch server
