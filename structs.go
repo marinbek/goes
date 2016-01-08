@@ -58,7 +58,7 @@ type Request struct {
 // Represents a Response from elasticsearch
 type Response struct {
 	Acknowledged bool
-	Error        string
+	Error        ElasticError
 	Errors       bool
 	Status       uint64
 	Took         uint64
@@ -166,6 +166,11 @@ type Hits struct {
 type SearchError struct {
 	Msg        string
 	StatusCode uint64
+}
+
+type ElasticError struct {
+	Type   string
+	Reason string
 }
 
 // Represent the status for a given index for the _status command

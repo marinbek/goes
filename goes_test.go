@@ -155,9 +155,9 @@ func (s *GoesTestSuite) TestDeleteIndexInexistantIndex(c *C) {
 	conn := NewConnection(ES_HOST, ES_PORT)
 	resp, err := conn.DeleteIndex("foobar")
 
-	c.Assert(err.Error(), Equals, "[404] IndexMissingException[[foobar] missing]")
+	c.Assert(err.Error(), Equals, "[404] index_not_found_exception")
 	resp.Raw = nil // Don't make us have to duplicate this.
-	c.Assert(resp, DeepEquals, &Response{Status: 404, Error: "IndexMissingException[[foobar] missing]"})
+	c.Assert(resp, DeepEquals, &Response{Status: 404, Error: ElasticError{Type: "index_not_found_exception", Reason: "no such index"}})
 }
 
 func (s *GoesTestSuite) TestDeleteIndexExistingIndex(c *C) {

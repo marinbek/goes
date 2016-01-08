@@ -378,8 +378,8 @@ func (req *Request) Run() (*Response, error) {
 		return esResp, &SearchError{Msg: "Unknown error while bulk indexing"}
 	}
 
-	if esResp.Error != "" {
-		return esResp, &SearchError{esResp.Error, esResp.Status}
+	if esResp.Error.Type != "" {
+		return esResp, &SearchError{esResp.Error.Type, esResp.Status}
 	}
 
 	return esResp, nil
