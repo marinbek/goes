@@ -377,7 +377,12 @@ func (s *GoesTestSuite) TestIndexWithFieldsInStruct(c *C) {
 	// just in case
 	conn.DeleteIndex(indexName)
 
-	_, err := conn.CreateIndex(indexName, map[string]interface{}{})
+	_, err := conn.CreateIndex(indexName, map[string]interface{}{
+		"settings": map[string]interface{}{
+			"index.number_of_shards":   1,
+			"index.number_of_replicas": 0,
+		},
+	})
 	c.Assert(err, IsNil)
 	defer conn.DeleteIndex(indexName)
 
@@ -405,6 +410,7 @@ func (s *GoesTestSuite) TestIndexWithFieldsInStruct(c *C) {
 		Id:      docId,
 		Type:    docType,
 		Version: 1,
+		Shards:  Shard{Total: 1, Successful: 1, Failed: 0},
 	}
 
 	response.Raw = nil
@@ -446,7 +452,12 @@ func (s *GoesTestSuite) TestIndexIdDefined(c *C) {
 	// just in case
 	conn.DeleteIndex(indexName)
 
-	_, err := conn.CreateIndex(indexName, map[string]interface{}{})
+	_, err := conn.CreateIndex(indexName, map[string]interface{}{
+		"settings": map[string]interface{}{
+			"index.number_of_shards":   1,
+			"index.number_of_replicas": 0,
+		},
+	})
 	c.Assert(err, IsNil)
 	defer conn.DeleteIndex(indexName)
 
@@ -471,6 +482,7 @@ func (s *GoesTestSuite) TestIndexIdDefined(c *C) {
 		Id:      docId,
 		Type:    docType,
 		Version: 1,
+		Shards:  Shard{Total: 1, Successful: 1, Failed: 0},
 	}
 
 	response.Raw = nil
