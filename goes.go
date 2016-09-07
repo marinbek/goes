@@ -605,3 +605,27 @@ func (c *Connection) AliasExists(alias string) (bool, error) {
 
 	return resp.Status == 200, err
 }
+
+// CloseIndex closes an index represented by a name
+func (c *Connection) CloseIndex(name string) (*Response, error) {
+	r := Request{
+		Conn:      c,
+		IndexList: []string{name},
+		method:    "POST",
+		api:       "_close",
+	}
+
+	return r.Run()
+}
+
+// OpenIndex opens an index represented by a name
+func (c *Connection) OpenIndex(name string) (*Response, error) {
+	r := Request{
+		Conn:      c,
+		IndexList: []string{name},
+		method:    "POST",
+		api:       "_open",
+	}
+
+	return r.Run()
+}
