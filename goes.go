@@ -629,3 +629,15 @@ func (c *Connection) OpenIndex(name string) (*Response, error) {
 
 	return r.Run()
 }
+
+func (c *Connection) GetAliases(indexes []string) (*Response, error) {
+
+	r := Request{
+		Conn:      c,
+		IndexList: indexes,
+		method:    "GET",
+		api:       "_alias/",
+	}
+
+	return r.Run()
+}
