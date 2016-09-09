@@ -641,3 +641,29 @@ func (c *Connection) GetAliases(indexes []string) (*Response, error) {
 
 	return r.Run()
 }
+
+func (c *Connection) ReplaceIndexInAlias(alias string, old_index string, new_index string) (*Response, error) {
+	command := map[string]interface{}{
+		"actions": make([]map[string]interface{}, 1),
+	}
+
+	command["actions"] = append(command["actions"].([]map[string]interface{}), map[string]interface{}{
+		"remove": map[string]interface{}{
+			"index": old_index,
+			"alias": alias,
+		},
+		"add": map[string]interface{}{
+			"index": new_index,
+			"alias": alias,
+		},
+	})
+
+	r := Request{
+		Conn:   c,
+		Query:  command,
+		method: "POST",
+		api:    "_aliases",
+	}
+
+	return r.Run()
+}
